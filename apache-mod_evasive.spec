@@ -7,7 +7,7 @@ Version:	1.10.1
 Release:	1
 License:	GPL
 Group:		Networking/Daemons/HTTP
-Source0:	http://www.zdziarski.com/projects/mod_evasive/mod_evasive_1.10.1.tar.gz
+Source0:	http://www.zdziarski.com/projects/mod_evasive/mod_evasive_%{version}.tar.gz
 # Source0-md5:	784fca4a124f25ccff5b48c7a69a65e5
 Source1:	%{name}.conf
 URL:		http://www.zdziarski.com/projects/mod_evasive/
@@ -29,14 +29,12 @@ mod_evasive is an evasive maneuvers module for Apache.
 %setup -q -n mod_%{mod_name}
 
 %build
-%{apxs} -c mod_%{mod_name}20.c -o mod_%{mod_name}20.la -DMAILER='/usr/sbin/sendmail -t'
+%{apxs} -c mod_%{mod_name}20.c -o mod_%{mod_name}20.la -DMAILER='/usr/lib/sendmail -t'
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}}
-
 install .libs/mod_%{mod_name}20.so $RPM_BUILD_ROOT%{_pkglibdir}
-
 install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/90_mod_%{mod_name}.conf
 
 %clean
@@ -54,4 +52,4 @@ fi
 %defattr(644,root,root,755)
 %doc README
 %attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*_mod_%{mod_name}.conf
-%attr(755,root,root) %{_pkglibdir}/*
+%attr(755,root,root) %{_pkglibdir}/*.so
