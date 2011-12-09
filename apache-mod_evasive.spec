@@ -23,7 +23,7 @@ Obsoletes:	apache-mod_dosevasive
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %define		_pkglibdir	%(%{apxs} -q LIBEXECDIR 2>/dev/null)
-%define		_sysconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)
+%define		_sysconfdir	%(%{apxs} -q SYSCONFDIR 2>/dev/null)/conf.d
 
 %description
 mod_(dos)evasive is an evasive maneuvers module for Apache to provide
@@ -49,11 +49,10 @@ nadużycia pocztą elektroniczną i poprzez sysloga.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_pkglibdir}
-install -d $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf
+install -d $RPM_BUILD_ROOT{%{_pkglibdir},%{_sysconfdir}}
 
-install .libs/mod_%{mod_name}20.so $RPM_BUILD_ROOT%{_pkglibdir}/mod_%{mod_name}.so
-install %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/httpd.conf/80_mod_%{mod_name}.conf
+install -p .libs/mod_%{mod_name}20.so $RPM_BUILD_ROOT%{_pkglibdir}/mod_%{mod_name}.so
+cp -p %{SOURCE1} $RPM_BUILD_ROOT%{_sysconfdir}/80_mod_%{mod_name}.conf
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -69,5 +68,5 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc README
-%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/httpd.conf/*_mod_%{mod_name}.conf
+%attr(640,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/*_mod_%{mod_name}.conf
 %attr(755,root,root) %{_pkglibdir}/*.so
